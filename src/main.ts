@@ -2,6 +2,7 @@
 // All simulation happens in step(FIXED_DT); rendering reads state only.
 
 import { clearEdges, debugInfo, down, initInput, onFirstGesture, pressed } from './engine/input';
+import { centerCamera as camCenter, updateCamera, type Camera } from './engine/camera';
 import { initAudio, play, toggleMuted, isMuted } from './engine/audio';
 import { overlaps } from './engine/physics';
 import { A, allReady, drawFrame } from './engine/sprites';
@@ -107,13 +108,19 @@ function startNewGame(): void {
   state = 'playing';
 }
 
+// Camera state lives here; behavior (dead-zone push / centering) is in
+// engine/camera.ts. The view stays still while Brko roams the middle of the
+// screen and only scrolls when he nears a side.
 function centerCamera(): void {
-  camX = clamp(hero.x + hero.w / 2 - VIEW_W / 2, 0, Math.max(0, worldW - VIEW_W));
-  camY = clamp(hero.y + hero.h / 2 - VIEW_H / 2, 0, Math.max(0, worldH - VIEW_H));
+  const c: Camera = { x: camX, y: camY };
+  camCenter(c, hero.x + hero.w / 2, hero.y + hero.h / 2, VIEW_W, VIEW_H, worldW, worldH);
+  camX = c.x; camY = c.y;
 }
 
-function clamp(v: number, lo: number, hi: number): number {
-  return v < lo ? lo : v > hi ? hi : v;
+function followCamera(): void {
+  const c: Camera = { x: camX, y: camY };
+  updateCamera(c, hero.x + hero.w / 2, hero.y + hero.h / 2, VIEW_W, VIEW_H, worldW, worldH);
+  camX = c.x; camY = c.y;
 }
 
 // --- damage / death ---
@@ -252,7 +259,7 @@ function step(dt: number): void {
     return;
   }
 
-  centerCamera();
+  followCamera();
 }
 
 // ---------------------------------------------------------------------------
