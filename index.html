@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<title>Prehisteria</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #0b0f0a; overflow: hidden;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color: #f4ecd8; touch-action: none; user-select: none;
+    -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  #game { position: fixed; inset: 0; display: grid; place-items: center; }
+  /* Integer-scaled framebuffer: crisp pixels, letterboxed to fit the window. */
+  canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+
+  /* On-screen touch controls — hidden until a touch device is detected. */
+  #touch { position: fixed; inset: 0; pointer-events: none; display: none; }
+  #touch.on { display: block; }
+  .pad { position: absolute; bottom: 18px; display: flex; gap: 14px; pointer-events: auto; }
+  .pad.left { left: 18px; }
+  .pad.right { right: 18px; }
+  .btn {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: rgba(20,30,15,0.55); border: 2px solid rgba(244,236,216,0.4);
+    color: #f4ecd8; font-size: 26px; display: grid; place-items: center;
+    touch-action: none; backdrop-filter: blur(2px);
+  }
+  .btn:active { background: rgba(120,180,70,0.7); }
+</style>
+</head>
+<body>
+<div id="game"><canvas id="c"></canvas></div>
+
+<div id="touch">
+  <div class="pad left">
+    <div class="btn" data-key="left">◀</div>
+    <div class="btn" data-key="down">▼</div>
+    <div class="btn" data-key="right">▶</div>
+  </div>
+  <div class="pad right">
+    <div class="btn" data-key="attack">✊</div>
+    <div class="btn" data-key="jump">▲</div>
+  </div>
+</div>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
